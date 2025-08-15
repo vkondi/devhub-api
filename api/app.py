@@ -2,6 +2,7 @@ from flask import Flask
 from flask_cors import CORS
 from config import is_production
 from routes.health_routes import health_bp
+from routes.portfolio_app_routes import portfolio_bp
 from routes.default_routes import default_bp
 
 def create_app():
@@ -21,6 +22,7 @@ def create_app():
     
     # Register blueprints
     app.register_blueprint(health_bp, url_prefix='/api/v1')
+    app.register_blueprint(portfolio_bp, url_prefix='/api/v1/portfolio')
     app.register_blueprint(default_bp, url_prefix='/')
     
     return app
