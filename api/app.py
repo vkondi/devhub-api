@@ -1,9 +1,14 @@
+import sys
+import os
 from flask import Flask
 from flask_cors import CORS
 from config import is_production
 from routes.health_routes import health_bp
 
-
+# Add the current directory to Python path for imports
+current_dir = os.path.dirname(os.path.abspath(__file__))
+if current_dir not in sys.path:
+    sys.path.insert(0, current_dir)
 
 def create_app():
     """
@@ -29,10 +34,6 @@ def create_app():
 # Create the Flask app instance
 app = create_app()
 
-
-# @app.route('/')
-# def home():
-#     return {"message": "Flask on Vercel!"}
 
 # Required for both local and Vercel
 if __name__ == '__main__':
