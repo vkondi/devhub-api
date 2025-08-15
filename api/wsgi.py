@@ -1,2 +1,3 @@
-from app import app
+from api.app import app
+
 application = app  # Vercel requires this name
