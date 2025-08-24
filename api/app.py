@@ -4,6 +4,10 @@ from config import is_production
 from routes.health_routes import health_bp
 from routes.portfolio_app_routes import portfolio_bp
 from routes.default_routes import default_bp
+from services.rsa_encryption_service import RSAEncryption
+
+# Initialize RSA Encryption Manager on load
+rsa_manager = RSAEncryption()
 
 def create_app():
     """
