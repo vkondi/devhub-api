@@ -3,6 +3,7 @@ from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import padding
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.backends import default_backend
+import base64
 
 class RSAEncryption:
     def __init__(self):
@@ -36,16 +37,17 @@ class RSAEncryption:
                         label=None
                     )
                 )
-                return ciphertext
+                return base64.b64encode(ciphertext).decode('utf-8')  # return Base64
             except Exception as e:
                 print(f"[RSAEncryption][encrypt] >> Error encrypting data: {e}")
                 return None
         else:
             raise ValueError("Public key not loaded")
         
-    def decrypt(self, ciphertext):
+    def decrypt(self, ciphertext_b64):
         if self.private_key:
             try:
+                ciphertext = base64.b64decode(ciphertext_b64)  # decode from base64
                 plaintext = self.private_key.decrypt(
                     ciphertext,
                     padding.OAEP(

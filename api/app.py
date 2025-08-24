@@ -4,7 +4,12 @@ from config import is_production
 from routes.health_routes import health_bp
 from routes.portfolio_app_routes import portfolio_bp
 from routes.default_routes import default_bp
+from routes.auth_routes import auth_bp
 from services.rsa_encryption_service import RSAEncryption
+from database import initialize_db
+
+# Initialize the database on app startup
+initialize_db()
 
 # Initialize RSA Encryption Manager on load
 rsa_manager = RSAEncryption()
@@ -25,6 +30,7 @@ def create_app():
     CORS(app, expose_headers=['Content-Disposition'])
     
     # Register blueprints
+    app.register_blueprint(auth_bp, url_prefix='/api/v1/auth')
     app.register_blueprint(health_bp, url_prefix='/api/v1')
     app.register_blueprint(portfolio_bp, url_prefix='/api/v1/portfolio')
     app.register_blueprint(default_bp, url_prefix='/')
