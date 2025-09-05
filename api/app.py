@@ -6,7 +6,7 @@ from routes.portfolio_app_routes import portfolio_bp
 from routes.default_routes import default_bp
 from routes.auth_routes import auth_bp
 from services.rsa_encryption_service import RSAEncryption
-from database import initialize_db
+from database.database import initialize_db
 
 # Initialize the database on app startup
 initialize_db()
