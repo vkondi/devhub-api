@@ -38,7 +38,7 @@ def get_user_by_username(username):
         "user": user
     }), 200
     
-@project_users_bp.route('/', methods=['POST'])
+@project_users_bp.route('/create', methods=['POST'])
 def create_user():
     """
     Endpoint to create a new project user.
@@ -47,24 +47,100 @@ def create_user():
     data = request.get_json()
     required_fields = ['project', 'username', 'password']
     
+    print(f"Received data for new user: {data}")
+    
+    # Mandatory field check
     if not data or not all(field in data for field in required_fields):
         return jsonify({"error": f"Missing one of the required fields: {required_fields}"}), 400
     
+    project_name = data['project']
+    username = data['username']
+    password = data['password']
     
-    decrypted_password = rsa_manager.decrypt(data['password'])
+    # Empty field check
+    if not project_name or not username or not password:
+        return jsonify({"error": "Project name, username, and password cannot be empty"}), 400
+    
+    # Decrypt the password using RSA
+    decrypted_password = rsa_manager.decrypt(password)
     if decrypted_password is None:
         return jsonify({"error": "Failed to decrypt password"}), 400
     
-    
-    project_name = data['project']
-    username = data['username']
+    # Hash the password before storing
     password_hash = hash_password(decrypted_password)
     
-    user_id = project_users_service.create_user(project_name, username, password_hash)
-    if user_id is None:
+    new_user = project_users_service.create_user(project_name, username, password_hash)
+    if new_user is None:
         return jsonify({"error": "Failed to create user"}), 500
     
     return jsonify({
         "message": "User created successfully",
-        "userId": user_id
+        "user": new_user
     }), 201
+
+
+@project_users_bp.route('/<string:username>', methods=['DELETE'])
+def delete_user(username):
+    """
+    Endpoint to delete a project user by their username.
+    """
+    success = project_users_service.delete_user(username)
+    if not success:
+        return jsonify({"error": "Failed to delete user or user not found"}), 500
+    
+    return jsonify({
+        "message": f"User {username} deleted successfully"
+    }), 200
+    
+@project_users_bp.route('/activate', methods=['POST'])
+def activate_user():
+    """
+    Endpoint to activate a project user.
+    Expects JSON body with 'username' field.
+    """
+    data = request.get_json()
+    
+    # Mandatory field check
+    if not data or 'username' not in data:
+        return jsonify({"error": "Missing 'username' in request body"}), 400
+    
+    username = data['username']
+    
+    # Empty field check
+    if not username:
+        return jsonify({"error": "Username cannot be empty"}), 400
+    
+    success = project_users_service.activate_user(username)
+    if not success:
+        return jsonify({"error": "Failed to activate user or user not found"}), 500
+    
+    return jsonify({
+        "message": f"User {username} activated successfully"
+    }), 200
+    
+
+@project_users_bp.route('/deactivate', methods=['POST'])
+def deactivate_user():
+    """
+    Endpoint to deactivate a project user.
+    Expects JSON body with 'username' field.
+    """
+    data = request.get_json()
+    
+    # Mandatory field check
+    if not data or 'username' not in data:
+        return jsonify({"error": "Missing 'username' in request body"}), 400
+    
+    username = data['username']
+    
+    # Empty field check
+    if not username:
+        return jsonify({"error": "Username cannot be empty"}), 400
+    
+    success = project_users_service.deactivate_user(username)
+    if not success:
+        return jsonify({"error": "Failed to deactivate user or user not found"}), 500
+    
+    return jsonify({
+        "message": f"User {username} deactivated successfully"
+    }), 200
