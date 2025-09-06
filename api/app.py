@@ -1,10 +1,13 @@
 from flask import Flask
 from flask_cors import CORS
 from config import is_production
+
 from routes.health_routes import health_bp
 from routes.portfolio_app_routes import portfolio_bp
 from routes.default_routes import default_bp
 from routes.auth_routes import auth_bp
+from routes.project_users_routes import project_users_bp
+
 from services.rsa_encryption_service import RSAEncryption
 from database.database import initialize_db
 
@@ -33,6 +36,7 @@ def create_app():
     app.register_blueprint(auth_bp, url_prefix='/api/v1/auth')
     app.register_blueprint(health_bp, url_prefix='/api/v1')
     app.register_blueprint(portfolio_bp, url_prefix='/api/v1/portfolio')
+    app.register_blueprint(project_users_bp, url_prefix='/api/v1/users')
     app.register_blueprint(default_bp, url_prefix='/')
     
     return app
