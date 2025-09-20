@@ -15,15 +15,19 @@ def hash_password(password: str) -> str:
     ph = PasswordHasher()
     return ph.hash(password)
 
+
+def verify_hashed_password(stored_hash: str, password: str) -> bool:
+    # Verify the provided password against the stored Argon2 hash
+    ph = PasswordHasher()
+    try:
+        ph.verify(stored_hash, password)
+        return True
+    except:
+        return False
+
 def generate_token() -> str:
     # Generate a unique token using UUID4
     return str(uuid.uuid4())
-
-"""
--------------------
-User management functions
--------------------
-"""
 
 
 """

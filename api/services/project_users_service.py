@@ -1,6 +1,6 @@
 from database.database import get_connection
 from psycopg2.extras import RealDictCursor
-import datetime
+from database.helpers import verify_hashed_password
 
 class ProjectUsersService:
     """
@@ -151,3 +151,14 @@ class ProjectUsersService:
         finally:
             cur.close()
             conn.close()
+            
+    def validate_user(self, username: str, password: str) -> bool:
+        """
+        Validate user credentials.
+        """
+        user = self.get_user_by_username(username)
+        if not user:
+            return False
+        
+        return verify_hashed_password(user['password_hash'], password) and user['is_active']
+        
