@@ -1,7 +1,7 @@
 from .database import get_connection
 import uuid
 import datetime
-import hashlib
+from argon2 import PasswordHasher
 from psycopg2.extras import RealDictCursor
 
 """
@@ -11,8 +11,9 @@ Utility functions
 """
 
 def hash_password(password: str) -> str:
-    # Generate SHA-256 hash of the password
-    return hashlib.sha256(password.encode('utf-8')).hexdigest()
+    # Generate Argon2 hash of the password
+    ph = PasswordHasher()
+    return ph.hash(password)
 
 def generate_token() -> str:
     # Generate a unique token using UUID4
