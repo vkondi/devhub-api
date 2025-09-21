@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify
 from services.devto_service import DevToService
+from middleware.auth_decorator import token_required
 
 # Create a bluprint
 portfolio_bp = Blueprint('portfolio', __name__)
@@ -8,9 +9,11 @@ portfolio_bp = Blueprint('portfolio', __name__)
 devto_service = DevToService()
 
 @portfolio_bp.route('/blogs', methods=['GET'])
+@token_required
 def get_blogs():
     """
     Endpoint to retrieve a list of blogs.
+    Requires valid authentication token.
     """
     blogs = devto_service.get_articles()
     if blogs is None:
