@@ -31,15 +31,7 @@ def initialize_db():
                 is_active BOOLEAN DEFAULT TRUE
             );
         """)
-        cur.execute("""
-            CREATE TABLE IF NOT EXISTS auth_tokens (
-                id SERIAL PRIMARY KEY,
-                project_id INTEGER REFERENCES project_users(id),
-                token VARCHAR(500) UNIQUE NOT NULL,
-                expires_at TIMESTAMP NOT NULL,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            );
-        """)
+        
         conn.commit()
         print("Database initialized successfully.")
     except Exception as e:

@@ -1,5 +1,5 @@
 from services.project_users_service import ProjectUsersService
-from database.helpers import create_auth_token, validate_auth_token, revoke_auth_token
+from database.helpers import validate_jwt, generate_jwt
 
 # Initialize service
 project_users_service = ProjectUsersService()
@@ -13,26 +13,19 @@ class AuthService:
             return {"error": "Invalid username or password"}, 401
         
         user = project_users_service.get_user_by_username(username)
-        token = create_auth_token(user["id"])
+        token = generate_jwt(user["id"])
         
         if not token:
             return {"error": "Failed to generate auth token"}, 500
         
-        return {"message": "Login successful", "token": token["token"], "expires_at": token["expires_at"]}, 200
+        return {"message": "Login successful", "token": token}, 200
         
     
     @staticmethod
     def validate_token(token: str):
         """ Check if the provided token is valid """
-        if validate_auth_token(token):
+        if validate_jwt(token):
             return {"message": "Token is valid"}, 200
         else:
             return {"error": "Invalid or expired token"}, 401
         
-    @staticmethod
-    def logout(token: str):
-        """ Revoke the provided auth token """
-        if revoke_auth_token(token):
-            return {"message": "Logged out successfully"}, 200
-        else:
-            return {"error": "Failed to logout"}, 400

@@ -1,6 +1,6 @@
 from functools import wraps
 from flask import request, jsonify
-from database.helpers import validate_auth_token
+from database.helpers import validate_jwt
 
 def token_required(f):
     """
@@ -35,7 +35,7 @@ def token_required(f):
             }), 401
         
         # Validate the token
-        if not validate_auth_token(token):
+        if not validate_jwt(token):
             return jsonify({
                 "error": "Invalid or expired token",
                 "message": "Please provide a valid authentication token"
