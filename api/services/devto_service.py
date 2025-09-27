@@ -22,7 +22,6 @@ class DevToService:
         try:
             response = requests.get(self.api_url, headers=self.headers)
             response.raise_for_status()  # Raise an error for bad responses
-            response.headers['Cache-Control'] = 'max-age=604800, must-revalidate'
             return response.json()
         except requests.exceptions.RequestException as e:
             print(f"[DevToService][get_articles] >> Error fetching articles: {e}")
