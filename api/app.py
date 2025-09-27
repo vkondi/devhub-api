@@ -1,5 +1,6 @@
 from flask import Flask
 from flask_cors import CORS
+from extensions import cache
 from config import is_production
 
 from routes.health_routes import health_bp
@@ -17,6 +18,7 @@ initialize_db()
 # Initialize RSA Encryption Manager on load
 rsa_manager = RSAEncryption()
 
+
 def create_app():
     """
     Application factory pattern to create and configure the Flask app.
@@ -28,6 +30,9 @@ def create_app():
     # Configure Flask for better performance with large responses
     app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16 MB
     app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0  # Disable caching for development
+    
+    # Initialize cache
+    cache.init_app(app)
     
     # Enable CORS for all routes
     CORS(app, expose_headers=['Content-Disposition'])
