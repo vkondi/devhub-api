@@ -7,4 +7,4 @@ cryptography==46.0.7
 psycopg2-binary==2.9.11
 argon2-cffi==25.1.0
 PyJWT==2.12.1
-Flask-Caching==2.3.1
+Flask-Caching==2.4.0
